@@ -3,20 +3,18 @@
 Déploiement d'Ollama en conteneur Podman rootless (quadlet systemd) sur une
 Bazzite, piloté depuis le Mac via SSH sur le tailnet. Sert l'API Ollama brute
 sur le port 11434, sans OpenWebUI ni reverse proxy (Tailscale chiffre déjà le
-trafic).
+trafic). Génère aussi la config OpenCode côté Mac pour pointer dessus.
 
 ## Arborescence
 
 ```
 ansible.cfg
 inventory.yml
-playbook.yml
-vars.yml
-roles/
-  ollama/
-    tasks/main.yml
-    handlers/main.yml
-    templates/ollama.container.j2
+vars.yml                         source de vérité (GPU, port, modèles, host)
+site.yml                         2 plays : Ollama (Bazzite) + OpenCode (Mac)
+templates/
+  ollama.container.j2            quadlet Podman
+  opencode.jsonc.j2             config OpenCode
 ```
 
 ## Prérequis
@@ -44,15 +42,20 @@ Côté Bazzite (GPU NVIDIA) :
 ## Configuration
 
 Tout est dans `vars.yml` : type de GPU (`ollama_gpu`), image, port, longueur de
-contexte et liste des modèles à tirer. Pour basculer sur AMD, mettre
-`ollama_gpu: amd` et décommenter l'image `:rocm`.
+contexte, liste des modèles à tirer, adresse tailnet de la Bazzite et modèle
+OpenCode par défaut. La config OpenCode (baseURL + liste de modèles) en dérive,
+donc un modèle ajouté à `ollama_models` apparaît des deux côtés. Pour basculer
+sur AMD, mettre `ollama_gpu: amd` et décommenter l'image `:rocm`.
 
 ## Déploiement
 
 ```bash
 ansible bazzite-gpu -m ping          # vérifier la connexion
-ansible-playbook playbook.yml        # déployer
+ansible-playbook site.yml            # Ollama sur la Bazzite + config OpenCode
 ```
+
+Pour ne jouer qu'une moitié : `--limit bazzite-gpu` (Ollama seul) ou
+`--limit localhost` (OpenCode seul).
 
 ## Vérifications post-déploiement
 

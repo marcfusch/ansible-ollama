@@ -3,17 +3,24 @@
 ollama_gpu: nvidia
 
 # Image selon le GPU
-ollama_image: "docker.io/ollama/ollama"        # NVIDIA / CUDA
+ollama_image: "docker.io/ollama/ollama" # NVIDIA / CUDA
 # ollama_image: "docker.io/ollama/ollama:rocm"  # AMD / ROCm
 
 ollama_port: 11434
 ollama_context_length: 16384
 
 ollama_models:
-  - qwen3.5:4b
-  - qwen2.5-coder:7b
+  - qwen2.5-coder:7b # complétion / édition de code
+  - qwen3:8b # agentique / tool-calling (défaut OpenCode)
+  - qwen3.5:9b
 
 # Devices AMD (ignorés si ollama_gpu == "nvidia")
 ollama_amd_devices:
   - /dev/kfd
   - /dev/dri
+
+# OpenCode (playbook opencode.yml, cible le Mac en local)
+# Adresse tailnet de la Bazzite vue depuis le Mac
+ollama_tailnet_host: 100.64.187.111
+# Modèle sélectionné par défaut dans OpenCode
+opencode_default_model: qwen3:8b

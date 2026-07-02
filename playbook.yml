@@ -1,7 +1,0 @@
-# playbook.yml
-- hosts: bazzite-gpu
-  become: false # root or not root (not root in our case)
-  vars_files:
-    - vars.yml
-  roles:
-    - ollama
