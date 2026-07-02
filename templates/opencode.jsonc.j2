@@ -1,0 +1,71 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (bazzite tailnet)",
+      "options": {
+        "baseURL": "http://{{ ollama_tailnet_host }}:{{ ollama_port }}/v1"
+      },
+      "models": {
+{% for m in ollama_models %}
+        "{{ m }}": {
+          "name": "{{ m }}"
+        }{{ "," if not loop.last else "" }}
+{% endfor %}
+      }
+    }
+  },
+  "model": "ollama/{{ opencode_default_model }}",
+  "permission": {
+    "edit": "allow",
+    "webfetch": "ask",
+    "bash": {
+      "*": "ask",
+
+      "ls*": "allow",
+      "pwd": "allow",
+      "cat *": "allow",
+      "head *": "allow",
+      "tail *": "allow",
+      "echo *": "allow",
+      "which *": "allow",
+      "grep *": "allow",
+      "rg *": "allow",
+      "find *": "allow",
+      "tree*": "allow",
+      "wc *": "allow",
+      "file *": "allow",
+      "stat *": "allow",
+      "env": "allow",
+
+      "git status": "allow",
+      "git status *": "allow",
+      "git diff*": "allow",
+      "git log*": "allow",
+      "git show*": "allow",
+      "git branch": "allow",
+      "git branch *": "allow",
+      "git remote*": "allow",
+
+      "npm run *": "allow",
+      "npm test*": "allow",
+      "node --version": "allow",
+      "python3 --version": "allow",
+
+      "git push*": "ask",
+      "git reset*": "ask",
+      "git checkout*": "ask",
+      "git clean*": "ask",
+
+      "rm -rf*": "deny",
+      "rm -fr*": "deny",
+      "sudo *": "deny",
+      "shutdown*": "deny",
+      "reboot*": "deny",
+      "mkfs*": "deny",
+      "dd *": "deny",
+      ":(){*": "deny"
+    }
+  }
+}

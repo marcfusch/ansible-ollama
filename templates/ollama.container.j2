@@ -1,0 +1,29 @@
+# templates/ollama.container.j2
+[Unit]
+Description=Ollama container
+After=network-online.target
+
+[Container]
+Image={{ ollama_image }}
+ContainerName=ollama
+PublishPort=0.0.0.0:{{ ollama_port }}:11434
+Volume=ollama:/root/.ollama
+Environment=OLLAMA_CONTEXT_LENGTH={{ ollama_context_length }}
+Environment=OLLAMA_FLASH_ATTENTION=1
+Environment=OLLAMA_KV_CACHE_TYPE=q8_0
+{% if ollama_gpu == "nvidia" %}
+AddDevice=nvidia.com/gpu=all
+# SELinux (Bazzite enforcing) bloque NVML en rootless sans ça
+SecurityLabelDisable=true
+{% else %}
+{% for dev in ollama_amd_devices %}
+AddDevice={{ dev }}
+{% endfor %}
+{% endif %}
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target
