@@ -1,0 +1,19 @@
+# vars.yml
+# Type de GPU: "nvidia" (CUDA via CDI) ou "amd" (ROCm via /dev/kfd + /dev/dri)
+ollama_gpu: nvidia
+
+# Image selon le GPU
+ollama_image: "docker.io/ollama/ollama"        # NVIDIA / CUDA
+# ollama_image: "docker.io/ollama/ollama:rocm"  # AMD / ROCm
+
+ollama_port: 11434
+ollama_context_length: 16384
+
+ollama_models:
+  - qwen3.5:4b
+  - qwen2.5-coder:7b
+
+# Devices AMD (ignorés si ollama_gpu == "nvidia")
+ollama_amd_devices:
+  - /dev/kfd
+  - /dev/dri

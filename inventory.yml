@@ -1,0 +1,6 @@
+all:
+  hosts:
+    bazzite-gpu:
+      ansible_host: 100.64.187.111
+      ansible_user: marcfusch
+      ansible_ssh_common_args: "-o ForwardAgent=yes"
