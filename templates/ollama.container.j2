@@ -25,5 +25,7 @@ AddDevice={{ dev }}
 Restart=always
 TimeoutStartSec=300
 
+{% if ollama_autostart | default(true) %}
 [Install]
 WantedBy=default.target
+{% endif %}

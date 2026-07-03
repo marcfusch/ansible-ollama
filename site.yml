@@ -18,6 +18,7 @@
         scope: user
       environment:
         XDG_RUNTIME_DIR: "/run/user/{{ ollama_uid.stdout }}"
+      when: ollama_autostart | default(true)
   tasks:
     - name: Récupérer l'UID de l'utilisateur distant
       ansible.builtin.command: id -u
@@ -59,10 +60,10 @@
         XDG_RUNTIME_DIR: "/run/user/{{ ollama_uid.stdout }}"
       failed_when: false
 
-    - name: Démarrer et activer le service Ollama
+    - name: Appliquer l'état du service Ollama (démarré si autostart, sinon arrêté)
       ansible.builtin.systemd:
         name: ollama.service
-        state: started
+        state: "{{ 'started' if ollama_autostart | default(true) else 'stopped' }}"
         scope: user
       environment:
         XDG_RUNTIME_DIR: "/run/user/{{ ollama_uid.stdout }}"
@@ -79,11 +80,13 @@
       retries: 30
       delay: 5
       until: ollama_api.status == 200
+      when: ollama_autostart | default(true)
 
     - name: Tirer les modèles
       ansible.builtin.command: "podman exec ollama ollama pull {{ item }}"
       loop: "{{ ollama_models }}"
       changed_when: true
+      when: ollama_autostart | default(true)
 
 - name: Générer la config OpenCode sur le Mac
   hosts: localhost

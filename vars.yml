@@ -9,6 +9,10 @@ ollama_image: "docker.io/ollama/ollama" # NVIDIA / CUDA
 ollama_port: 11434
 ollama_context_length: 32768
 
+# false = ne PAS lancer Ollama au démarrage (machine de jeu, GPU/VRAM libre au
+# boot). On le démarre à la demande. true = service actif au boot via linger.
+ollama_autostart: true
+
 ollama_models:
   - qwen2.5-coder:7b # complétion / édition de code
   - qwen3:8b # agentique / tool-calling (défaut OpenCode)
